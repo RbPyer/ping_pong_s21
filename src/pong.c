@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <termios.h>
 
 #define width 80      // ширина поля
 #define heigth 25     // высота поля
