@@ -150,7 +150,7 @@ void print_field() {
         if (ballY + ballDh == 0 || ballY + ballDh == heigth - 1) {
             ballDh *= -1;
         }
-        usleep(100000);
+        usleep(50000);
         clear_screen();
     }
 }
