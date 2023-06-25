@@ -1,3 +1,7 @@
+#include <fcntl.h>
+#include <stdlib.h>
+#include <termios.h>
+#include <unistd.h>
 #include <stdio.h>
 
 #define width 80      // ширина поля
@@ -24,7 +28,9 @@ void renderEmpty() { printf(" "); }
 void renderRakets() { printf("|"); }
 void print_border_y() { printf("-"); }
 void print_border_x() { printf("|"); }
-void clear_screen() { printf("\33[0d\33[2J"); }
+void clear_screen() { for (int i = 0; i < 25; i++) {
+        printf("\33[0d\33[2J");
+    } }
 
 void print_score(short int player_score1, short int player_score2) {
     for (short int i = 0; i < 80; i++) {
@@ -80,6 +86,7 @@ void pass_width(short int el_h, short int ballX, short int ballY, short int lRac
             };
             renderEmpty();
         }
+        usleep(1);
     }
 }
 
@@ -97,19 +104,10 @@ short int check_border(short int x, short int dx, short int y, short int dy, sho
     return flag;
 }
 
-short int check_input(char c) {
-    short int flag = 0;
-    if (c == 'A' || c == 'a' || c == 'z' || c == 'Z' || c == 'k' || c == 'K' || c == 'm' || c == 'M' ||
-        c == ' ') {
-        flag = 1;
-    }
-    return flag;
-}
-
 void print_field() {
     short int ballX = 39, ballY = 13, lRacket = 16, rRacket = 8, ballDw = -1, ballDh = 1, p1_score = 0,
               p2_score = 0;
-    char input;
+   
     while (check_score(p1_score, p2_score) != 1) {
         for (short int el_h = -1; el_h < heigth; el_h++) {
             if (el_h == -1) {
@@ -119,54 +117,60 @@ void print_field() {
             pass_width(el_h, ballX, ballY, lRacket, rRacket);
             putchar('\n');
         }
-        scanf("%c", &input);  // ввод следующего символа
-        if (check_input(input) == 1) {
-            if (getchar() == '\n') {
-                switch (input) {
-                    case 'a':
-                    case 'A':
-                        (lRacket < 3) ? lRacket : lRacket--;
-                        break;
-                    case 'z':
-                    case 'Z':
-                        (lRacket > 21) ? lRacket : lRacket++;
-                        break;
-                    case 'k':
-                    case 'K':
-                        (rRacket < 3) ? rRacket : rRacket--;
-                        break;
-                    case 'm':
-                    case 'M':
-                        (rRacket > 21) ? rRacket : rRacket++;
-                        break;
-                };
-                ballX += ballDw;
+         char input = getchar();
+
+        switch (input) {
+            case 'a':
+            case 'A':
+                (lRacket < 3) ? lRacket : lRacket--;
+                break;
+            case 'z':
+            case 'Z':
+                (lRacket > 21) ? lRacket : lRacket++;
+                break;
+            case 'k':
+            case 'K':
+                (rRacket < 3) ? rRacket : rRacket--;
+                break;
+            case 'm':
+            case 'M':
+                (rRacket > 21) ? rRacket : rRacket++;
+                break;
+            
+                
+        }
+        ballX += ballDw;
                 ballY += ballDh;
 
-                if (check_border(ballX, ballDw, ballY, ballDh, lRacket, rRacket) == 1) {
-                    if (ballX + ballDw == 0) {
-                        p2_score = p2_score + 1;
-                    } else if (ballX + ballDw == width - 1) {
-                        p1_score = p1_score + 1;
-                    }
-                    ballDw *= -1;
-                }
-                if (ballY + ballDh == 0 || ballY + ballDh == heigth - 1) {
-                    ballDh *= -1;
-                }
-            } else {
-                while (getchar() != '\n') {
-                    continue;
-                }
+        if (check_border(ballX, ballDw, ballY, ballDh, lRacket, rRacket) == 1) {
+            if (ballX + ballDw == 0) {
+                p2_score = p2_score + 1;
+            } else if (ballX + ballDw == width - 1) {
+                p1_score = p1_score + 1;
             }
-
-            clear_screen();
+            ballDw *= -1;
         }
+        if (ballY + ballDh == 0 || ballY + ballDh == heigth - 1) {
+            ballDh *= -1;
+        }
+        usleep(100000);
+        clear_screen();
     }
 }
 
 int main() {
+    struct termios term;
+    tcgetattr(STDIN_FILENO, &term);
+    term.c_lflag &= ~(ICANON | ECHO);
+    tcsetattr(STDIN_FILENO, TCSANOW, &term);
+
+    int flags = fcntl(STDIN_FILENO, F_GETFL, 0);
+    flags |= O_NONBLOCK;
+    fcntl(STDOUT_FILENO, F_SETFL, flags);
     print_field();
+    tcgetattr(0, &term);
+    term.c_lflag |= ICANON | ECHO;
+    tcsetattr(0, TCSANOW, &term);
     clear_screen();
     return 0;
 }
