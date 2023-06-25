@@ -1,22 +1,29 @@
 #include <stdio.h>
 
-#define width 80
-#define heigth 25
-#define max_count 21
+#define width 80      // ширина поля
+#define heigth 25     // высота поля
+#define max_count 21  // максимум очков
 
-void renderBall();
-void renderEmpty();
-void renderRakets();
-short int print_rracket(const int row, const int col, const int coord);
-short int print_lracket(const int row, int const col, const int coord);
+// Блок объявления функций //
+void renderBall();                                                       // отрисовка мячика
+void renderEmpty();                                                      // отрисовка пробела
+void renderRakets();                                                     // отрисовка символа
+short int print_rracket(const int row, const int col, const int coord);  // отрисовка правой ракетки
+short int print_lracket(const int row, int const col, const int coord);  // отрисовка левой ракетки
+void clear_screen();                                                     // очистка экрана
+void print_score(short int player_score1, short int player_score2);  // вывод очков
+short int check_score(short int player_score1, short int player_score2);  // проверка на конец игры
+void pass_width(short int el_h, short int ballX, short int ballY, short int lRacket,
+                short int rRacket);  // проход поля по ширине
+void print_field();                  // отрисовка поля
+
+// Конец блока объявления функций //
+
 void renderBall() { printf("*"); }
 void renderEmpty() { printf(" "); }
-void renderBorderH() { printf("-"); }
-void renderBorderW() { printf("|"); }
-void renderRakets() { printf("#"); }
+void renderRakets() { printf("|"); }
 void print_border_y() { printf("-"); }
 void print_border_x() { printf("|"); }
-void space_entered() { printf("%40s", "\nSpace was entered!\n"); }
 void clear_screen() { printf("\33[0d\33[2J"); }
 
 void print_score(short int player_score1, short int player_score2) {
@@ -76,6 +83,19 @@ void pass_width(short int el_h, short int ballX, short int ballY, short int lRac
     }
 }
 
+short int check_border(short int x, short int dx, short int y, short int dy, short int lRacket,
+                       short int rRacket) {
+    short int flag = 0;
+    short int flag_borders = x + dx == 0 || x + dx == width - 1;
+    short int flag_lracket =
+        x + dx == 3 && (y + dy == lRacket - 1 || y + dy == lRacket || y + dy == lRacket + 1);
+    short int flag_rracket =
+        x + dx == width - 4 && (y + dy == rRacket - 1 || y + dy == rRacket || y + dy == rRacket + 1);
+    if (flag_borders == 1 || flag_lracket == 1 || flag_rracket == 1) {
+        flag = 1;
+    }
+    return flag;
+}
 
 void print_field() {
     short int ballX = 39, ballY = 13, lRacket = 16, rRacket = 8, ballDw = -1, ballDh = 1, p1_score = 0,
@@ -90,7 +110,7 @@ void print_field() {
             pass_width(el_h, ballX, ballY, lRacket, rRacket);
             putchar('\n');
         }
-        scanf("%c", &input);
+        scanf("%c", &input);  // ввод следующего символа
         switch (input) {
             case 'a':
                 (lRacket < 3) ? lRacket : lRacket--;
@@ -106,7 +126,7 @@ void print_field() {
                 break;
         }
 
-        if (ballX + ballDw == 0 || ballX + ballDw == width - 1) {
+        if (check_border(ballX, ballDw, ballY, ballDh, lRacket, rRacket) == 1) {
             if (ballX + ballDw == 0) {
                 p2_score = p2_score + 1;
             } else if (ballX + ballDw == width - 1) {
