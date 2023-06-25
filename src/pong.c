@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <termios.h>
 
 #define width 80      // ширина поля
 #define heigth 25     // высота поля
@@ -113,17 +114,24 @@ void print_field() {
         scanf("%c", &input);  // ввод следующего символа
         switch (input) {
             case 'a':
+            case 'A':
                 (lRacket < 3) ? lRacket : lRacket--;
                 break;
             case 'z':
+            case 'Z':
                 (lRacket > 21) ? lRacket : lRacket++;
                 break;
             case 'k':
+            case 'K':
                 (rRacket < 3) ? rRacket : rRacket--;
                 break;
             case 'm':
+            case 'M':
                 (rRacket > 21) ? rRacket : rRacket++;
                 break;
+            case ' ':
+                ballX += ballDw;
+                ballY += ballDh;
         }
 
         if (check_border(ballX, ballDw, ballY, ballDh, lRacket, rRacket) == 1) {
@@ -137,14 +145,12 @@ void print_field() {
         if (ballY + ballDh == 0 || ballY + ballDh == heigth - 1) {
             ballDh *= -1;
         }
-        ballX += ballDw;
-        ballY += ballDh;
         clear_screen();
     }
 }
 
 int main() {
-    clear_screen();
     print_field();
+    clear_screen();
     return 0;
 }
