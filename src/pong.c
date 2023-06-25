@@ -167,6 +167,5 @@ void print_field() {
 
 int main() {
     print_field();
-    clear_screen();
     return 0;
 }

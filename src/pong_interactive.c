@@ -1,8 +1,8 @@
 #include <fcntl.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <termios.h>
 #include <unistd.h>
-#include <stdio.h>
 
 #define width 80      // ширина поля
 #define heigth 25     // высота поля
@@ -28,9 +28,11 @@ void renderEmpty() { printf(" "); }
 void renderRakets() { printf("|"); }
 void print_border_y() { printf("-"); }
 void print_border_x() { printf("|"); }
-void clear_screen() { for (int i = 0; i < 25; i++) {
+void clear_screen() {
+    for (int i = 0; i < 25; i++) {
         printf("\33[0d\33[2J");
-    } }
+    }
+}
 
 void print_score(short int player_score1, short int player_score2) {
     for (short int i = 0; i < 80; i++) {
@@ -107,7 +109,6 @@ short int check_border(short int x, short int dx, short int y, short int dy, sho
 void print_field() {
     short int ballX = 39, ballY = 13, lRacket = 16, rRacket = 8, ballDw = -1, ballDh = 1, p1_score = 0,
               p2_score = 0;
-   
     while (check_score(p1_score, p2_score) != 1) {
         for (short int el_h = -1; el_h < heigth; el_h++) {
             if (el_h == -1) {
@@ -117,8 +118,7 @@ void print_field() {
             pass_width(el_h, ballX, ballY, lRacket, rRacket);
             putchar('\n');
         }
-         char input = getchar();
-
+        char input = getchar();
         switch (input) {
             case 'a':
             case 'A':
@@ -136,12 +136,9 @@ void print_field() {
             case 'M':
                 (rRacket > 21) ? rRacket : rRacket++;
                 break;
-            
-                
         }
         ballX += ballDw;
-                ballY += ballDh;
-
+        ballY += ballDh;
         if (check_border(ballX, ballDw, ballY, ballDh, lRacket, rRacket) == 1) {
             if (ballX + ballDw == 0) {
                 p2_score = p2_score + 1;
@@ -171,6 +168,5 @@ int main() {
     tcgetattr(0, &term);
     term.c_lflag |= ICANON | ECHO;
     tcsetattr(0, TCSANOW, &term);
-    clear_screen();
     return 0;
 }
