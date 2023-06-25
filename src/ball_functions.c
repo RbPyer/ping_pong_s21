@@ -7,8 +7,10 @@ void renderBorderW();
 void renderRakets();
 short int print_rracket(const int row, const int col, const int coord, const int width);
 short int print_lracket(const int row, int const col, const int coord);
+void ball_move(char input, short int* x, short int* y, short int* dx, short int* dy)
 
-int main() {
+
+/*int main() {
     int width = 80;
     int height = 25;
     int ballW = 70;
@@ -24,9 +26,7 @@ int main() {
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
                 if (ballW == j && ballH == i) {
-                    // printf("%c", renderBall());
                     renderBall();
-                    //  } else if (j == 0 || j == width - 1) {
                 } else if (j == 0 || j == width - 1) {
                     renderBorderW();
                 } else if (i == 0 || i == height - 1) {
@@ -39,11 +39,11 @@ int main() {
             }
             printf("\n");
         }
-        printf("iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii");
+        space_entered();
         scanf("%c", &a);
         /*if (a == 'a') {
           ballW--;
-        }*/
+        }
         if (ballW + ballDw == 0 || ballW + ballDw == width - 1) {
             ballDw *= -1;
         }
@@ -56,10 +56,10 @@ int main() {
     }
 
     return 0;
-}
+} */
 
 short int print_lracket(const int row, const int col, const int coord) {
-    if (col == 1 && (coord == row || coord == row - 1 || coord == row + 1)) {
+    if (col == 2 && (coord == row || coord == row - 1 || coord == row + 1)) {
         renderRakets();
         return 1;
     }
@@ -72,6 +72,21 @@ short int print_rracket(const int row, const int col, const int coord, const int
         return 1;
     }
     return 0;
+}
+
+
+void ball_move(char input, short int* x, short int* y, short int* dx, short int* dy) {
+    if (input == 'a') {
+          *x--;
+        }
+        if (*x + *dx == 0 || *x + *dx == width - 1) {
+            *dx *= -1;
+        }
+        if (*y + *dy == 0 || *y + *dy == heigth - 1) {
+            *dy *= -1;
+        }
+        *x += *dx;
+        *y += *dy;
 }
 
 void renderBall() { printf("*"); }
