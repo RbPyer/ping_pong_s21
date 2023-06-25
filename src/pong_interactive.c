@@ -6,7 +6,7 @@
 
 #define width 80      // ширина поля
 #define heigth 25     // высота поля
-#define max_count 21  // максимум очков игры
+#define max_count 21  // максимум очков
 
 // Блок объявления функций //
 void renderBall();                                                       // отрисовка мячика
