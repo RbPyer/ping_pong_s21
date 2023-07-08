@@ -5,14 +5,18 @@
 #define max_count 21  // максимум очков игры
 
 // Блок объявления функций //
-void renderBall();                                                       // отрисовка мячика
-void renderEmpty();                                                      // отрисовка пробела
-void renderRakets();                                                     // отрисовка символа
-short int print_rracket(const int row, const int col, const int coord);  // отрисовка правой ракетки
-short int print_lracket(const int row, int const col, const int coord);  // отрисовка левой ракетки
-void clear_screen();                                                     // очистка экрана
-void print_score(short int player_score1, short int player_score2);  // вывод очков
-short int check_score(short int player_score1, short int player_score2);  // проверка на конец игры
+void renderBall();    // отрисовка мячика
+void renderEmpty();   // отрисовка пробела
+void renderRakets();  // отрисовка символа
+short int print_rracket(const int row, const int col,
+                        const int coord);  // отрисовка правой ракетки
+short int print_lracket(const int row, int const col,
+                        const int coord);  // отрисовка левой ракетки
+void clear_screen();                       // очистка экрана
+void print_score(short int player_score1,
+                 short int player_score2);  // вывод очков
+short int check_score(short int player_score1,
+                      short int player_score2);  // проверка на конец игры
 void pass_width(short int el_h, short int ballX, short int ballY, short int lRacket,
                 short int rRacket);  // проход поля по ширине
 void print_field();                  // отрисовка поля
